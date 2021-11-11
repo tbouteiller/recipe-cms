@@ -47,7 +47,7 @@ if($_POST && !empty($_POST['user_username']) && !empty($_POST['user_password']))
 </head>
 <body>
 <!--MAIN NAV BAR-->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">Right Recipe</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,14 +83,14 @@ if($_POST && !empty($_POST['user_username']) && !empty($_POST['user_password']))
 </nav>
 <!--BREADCRUMB NAV-->
 <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
-    <ol class="breadcrumb">
+    <ol class="breadcrumb ps-2 pt-1">
         <li class="breadcrumb-item"><a href="index.php">Home</a></li>
         <li class="breadcrumb-item active" aria-current="page">Login</li>
     </ol>
 </nav>
 <!--LOGON FORM-->
 <div class="container">
-        <form class="needs-validation" id="form" name="submit" action="login.php" method="POST" novalidate>          
+        <form class="needs-validation p-4 border border-2" id="form" name="submit" action="login.php" method="POST" novalidate>          
             <label for="user_username" class="form-label">Username:</label> 
             <input type="text" class="form-control" id="user_username" name="user_username" aria-describedby="userUsernameHelp" required>
             <p class="invalid-feedback">Username cannot be empty.</p>
@@ -102,7 +102,7 @@ if($_POST && !empty($_POST['user_username']) && !empty($_POST['user_password']))
                     Cannot find user with that username or password.
                 </div>
             <?php endif?>
-            <button>Login</button>
+            <button class="btn btn-dark mt-2">Login</button>
         </form>
     </div>
 <script src="validator.js"></script>
