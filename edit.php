@@ -2,14 +2,24 @@
 session_start();
 require('connect.php');
 require('session.php');
-
 $id = $_SESSION['user_id'];
 
-//GET
-if(isset($_GET['recipe_id'])) {
+//USER GET
+if(isset($_GET['recipe_id']) && $_SESSION['user_username'] != 'admin') {
         
     $recid = filter_input(INPUT_GET, 'recipe_id', FILTER_SANITIZE_NUMBER_INT);
     $query = "SELECT * FROM recipe WHERE user_id = '$id' AND recipe_id = :recipe_id ORDER BY recipe.recipe_id DESC";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':recipe_id', $recid, PDO::PARAM_INT);
+    $statement->execute();
+    $fields = $statement->fetch();
+} 
+
+//ADMIN GET
+if(isset($_GET['recipe_id']) && (isset($_SESSION['user_username']) && $_SESSION['user_username'] === 'admin')) {
+        
+    $recid = filter_input(INPUT_GET, 'recipe_id', FILTER_SANITIZE_NUMBER_INT);
+    $query = "SELECT * FROM recipe WHERE recipe_id = :recipe_id ORDER BY recipe.recipe_id DESC";
     $statement = $db->prepare($query);
     $statement->bindValue(':recipe_id', $recid, PDO::PARAM_INT);
     $statement->execute();
@@ -40,24 +50,42 @@ if($_POST && isset($_POST['recipe_name'])) {
     $recipe_ingredients = filter_input(INPUT_POST, 'recipe_ingredients', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $recipe_instructions = filter_input(INPUT_POST, 'recipe_instructions', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
-    $query2 = "UPDATE recipe SET recipe_name = :recipe_name, user_id = :user_id, recipe_description = :recipe_description, 
-               recipe_category = :recipe_category, recipe_ingredients = :recipe_ingredients, 
-               recipe_instructions = :recipe_instructions WHERE recipe_id = :recipe_id";
-
-    $statement = $db->prepare($query2);
-    $statement->bindValue(':recipe_name', $recipe_name);
-    $statement->bindValue(':user_id', $id);
-    $statement->bindValue(':recipe_id', $recid);
-    $statement->bindValue(':recipe_description', $recipe_description);
-    $statement->bindValue(':recipe_category', $recipe_category);
-    $statement->bindValue(':recipe_ingredients', $recipe_ingredients);
-    $statement->bindValue(':recipe_instructions', $recipe_instructions);
-    $statement->execute();
-    header("Location: myrecipe.php");
-    exit;
+    //UDPATES FOR REGULAR USER
+    if($_SESSION['user_username'] != 'admin') {
+        $query2 = "UPDATE recipe SET recipe_name = :recipe_name, user_id = :user_id, recipe_description = :recipe_description, 
+         recipe_category = :recipe_category, recipe_ingredients = :recipe_ingredients, 
+         recipe_instructions = :recipe_instructions WHERE recipe_id = :recipe_id";
+        $statement = $db->prepare($query2);
+        $statement->bindValue(':recipe_name', $recipe_name);
+        $statement->bindValue(':user_id', $id);
+        $statement->bindValue(':recipe_id', $recid);
+        $statement->bindValue(':recipe_description', $recipe_description);
+        $statement->bindValue(':recipe_category', $recipe_category);
+        $statement->bindValue(':recipe_ingredients', $recipe_ingredients);
+        $statement->bindValue(':recipe_instructions', $recipe_instructions);
+        $statement->execute();
+        header("Location: myrecipe.php");
+        exit;
+        
+    }
+    
+    //UPDATE FOR ADMIN
+    if($_SESSION['user_username'] === 'admin') {
+        $query2 = "UPDATE recipe SET recipe_name = :recipe_name, recipe_description = :recipe_description, 
+         recipe_category = :recipe_category, recipe_ingredients = :recipe_ingredients, 
+         recipe_instructions = :recipe_instructions WHERE recipe_id = :recipe_id";
+        $statement = $db->prepare($query2);
+        $statement->bindValue(':recipe_name', $recipe_name);
+        $statement->bindValue(':recipe_id', $recid);
+        $statement->bindValue(':recipe_description', $recipe_description);
+        $statement->bindValue(':recipe_category', $recipe_category);
+        $statement->bindValue(':recipe_ingredients', $recipe_ingredients);
+        $statement->bindValue(':recipe_instructions', $recipe_instructions);
+        $statement->execute();
+        header("Location: myrecipe.php");
+        exit;
+    }
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -82,10 +110,10 @@ if($_POST && isset($_POST['recipe_name'])) {
             <label for="form-select" class="form-label">Recipe Category:</label> 
             <select name ="recipe_category" class="form-select" aria-label="recipe category" required>
             <option selected disabled value="">Select a Category:</option>
-                <option value="1|Chicken">Chicken</option>
-                <option value="2|Breakfast">Breakfast</option>
-                <option value="3|Pasta">Pasta</option>
-                <option value="4|Fish">Fish</option>
+                <option value="1|Breakfast">Breakfast</option>
+                <option value="2|Lunch">Lunch</option>
+                <option value="3|Dinner">Dinner</option>
+                <option value="4|Dessert">Dessert</option>
             </select>
             <label for="recipe_ingredients" class="form-label">Ingredients:</label> 
             <textarea class="form-control" id="recipe_ingredients" name="recipe_ingredients" placeholder="Enter your ingredients here..."aria-describedby="recipeIngredientsHelp"><?=$fields['recipe_ingredients']?></textarea>
