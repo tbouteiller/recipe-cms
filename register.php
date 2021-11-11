@@ -59,14 +59,41 @@ if($_POST && !empty($_POST['user_displayName']) && !empty($_POST['user_username'
     <title>Register</title>
 </head>
 <body>
+  <!--MAIN NAV BAR-->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Right Recipe</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Sign In
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+            <li><a class="dropdown-item" href="#">Login</a></li>
+            <li><a class="dropdown-item" href="register.php">Register</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  <!--BREADCRUMB NAV-->
     <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
-        <ol class="breadcrumb">
+        <ol class="breadcrumb ps-2 pt-1">
             <li class="breadcrumb-item"><a href="index.php">Home</a></li>
             <li class="breadcrumb-item active" aria-current="Register">Register</li>
          </ol>
     </nav>
+    <!--REGISTER FORM-->
     <div class="container">
-        <form class="needs-validation2" id="form" name="submit" action="register.php" method="POST" novalidate oninput='user_password_verify.setCustomValidity(user_password_verify.value != user_password.value ? "Passwords do not match." : "")'>          
+        <form class="needs-validation" id="form" name="submit" action="register.php" method="POST" novalidate oninput='user_password_verify.setCustomValidity(user_password_verify.value != user_password.value ? "Passwords do not match." : "")'>          
             <label for="user_displayName" class="form-label">User Display Name:</label> 
             <input type="text" class="form-control" id="user_displayName" name="user_displayName" aria-describedby="userDisplayName" required>
             <p class="invalid-feedback">Please enter your display name.</p>
@@ -90,21 +117,7 @@ if($_POST && !empty($_POST['user_displayName']) && !empty($_POST['user_username'
             <button>Register</button>
         </form>
     </div>
-<script>
-    (function () {
-    'use strict'
-    var forms = document.querySelectorAll('.needs-validation2')
-
-    Array.prototype.slice.call(forms).forEach(function (form) {
-      form.addEventListener('submit', function (event) {
-        if (!form.checkValidity()) {
-          event.preventDefault()
-          event.stopPropagation()
-        }
-        form.classList.add('was-validated')
-      }, false)
-    })
-})()
-</script>  
+<script src="validator.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 </html>
