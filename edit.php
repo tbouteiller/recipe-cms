@@ -145,34 +145,34 @@ if($_POST && isset($_POST['recipe_name'])) {
 </nav>
 <!--CREATE FORM-->
 <div class="container">
-        <form class="needs-validation" id="form" name="submit" action="edit.php" method="POST" novalidate>
-            <input type="hidden" name="recipe_id" value="<?=$fields['recipe_id']?>">
-            <label for="recipe_name" class="form-label">Recipe Name:</label> 
-            <input value="<?=$fields['recipe_name']?>"type="text" class="form-control" id="recipe_name" name="recipe_name" aria-describedby="recipeNameHelp" required>
-            <p class="invalid-feedback">You need a name for your recipe.</p>
-            <label for="recipe_description" class="form-label">Recipe Description:</label> 
-            <textarea class="form-control" id="recipe_description" name="recipe_description" placeholder="Enter the recipes description here..."aria-describedby="recipeDescriptionHelp" required><?=$fields['recipe_description']?></textarea>
-            <p class="invalid-feedback">Provide a description for your recipe.</p>
-            <label for="form-select" class="form-label">Recipe Category:</label> 
-            <select name ="recipe_category" class="form-select" aria-label="recipe category" required>
+    <form class="needs-validation" id="form" name="submit" action="edit.php" method="POST" novalidate>
+        <input type="hidden" name="recipe_id" value="<?=$fields['recipe_id']?>">
+        <label for="recipe_name" class="form-label">Recipe Name:</label> 
+        <input value="<?=$fields['recipe_name']?>"type="text" class="form-control" id="recipe_name" name="recipe_name" aria-describedby="recipeNameHelp" required>
+        <p class="invalid-feedback">You need a name for your recipe.</p>
+        <label for="recipe_description" class="form-label">Recipe Description:</label> 
+        <textarea class="form-control" id="recipe_description" name="recipe_description" placeholder="Enter the recipes description here..."aria-describedby="recipeDescriptionHelp" required><?=$fields['recipe_description']?></textarea>
+        <p class="invalid-feedback">Provide a description for your recipe.</p>
+        <label for="form-select" class="form-label">Recipe Category:</label> 
+        <select name ="recipe_category" class="form-select" aria-label="recipe category" required>
             <option selected disabled value="">Select a Category:</option>
-                <option value="1|Breakfast" <?php if($fields['recipe_category'] == 'Breakfast'):?><?='selected="selected"'?><?php endif?> >Breakfast</option>
-                <option value="2|Lunch" <?php if($fields['recipe_category'] == 'Lunch'):?><?='selected="selected"'?><?php endif?>>Lunch</option>
-                <option value="3|Dinner" <?php if($fields['recipe_category'] == 'Dinner'):?><?='selected="selected"'?><?php endif?>>Dinner</option>
-                <option value="4|Dessert" <?php if($fields['recipe_category'] == 'Dessert'):?><?='selected="selected"'?><?php endif?>>Dessert</option>
-            </select>
-            <label for="recipe_ingredients" class="form-label">Ingredients:</label> 
-            <textarea class="form-control" id="recipe_ingredients" name="recipe_ingredients" placeholder="Enter your ingredients here..."aria-describedby="recipeIngredientsHelp"><?=$fields['recipe_ingredients']?></textarea>
-            <p class="invalid-feedback">Enter the ingredients you used to make this recipe.</p>
-            <label for="recipe_instructions" class="form-label">Instructions:</label> 
-            <textarea class="form-control" id="recipe_instructions" name="recipe_instructions" placeholder="Step 1..."aria-describedby="recipeInstructionsHelp"><?=$fields['recipe_instructions']?></textarea>
-            <p class="invalid-feedback">Provide instructions on how you made this recipe.</p>
-           <!-- <label for="recipe_picture" class="form-label">Recipe Picture:</label> 
-            <input type="file" class="form-control" id="recipe_picture" name="recipe_picture" aria-describedby="recipePictureeHelp">-->
-            <div>
-                <button class="update" type="submit">Update</button>
-                <button class="delete" type="submit" name="deleteData" onclick="return confirm('Are you sure you want to delete?')">Delete</button>
-            </div>
+            <option value="1|Breakfast" <?php if($fields['recipe_category'] == 'Breakfast'):?><?='selected="selected"'?><?php endif?> >Breakfast</option>
+            <option value="2|Lunch" <?php if($fields['recipe_category'] == 'Lunch'):?><?='selected="selected"'?><?php endif?>>Lunch</option>
+            <option value="3|Dinner" <?php if($fields['recipe_category'] == 'Dinner'):?><?='selected="selected"'?><?php endif?>>Dinner</option>
+            <option value="4|Dessert" <?php if($fields['recipe_category'] == 'Dessert'):?><?='selected="selected"'?><?php endif?>>Dessert</option>
+        </select>
+        <label for="recipe_ingredients" class="form-label">Ingredients:</label> 
+        <textarea class="form-control" id="recipe_ingredients" name="recipe_ingredients" placeholder="Enter your ingredients here..."aria-describedby="recipeIngredientsHelp"><?=$fields['recipe_ingredients']?></textarea>
+        <p class="invalid-feedback">Enter the ingredients you used to make this recipe.</p>
+        <label for="recipe_instructions" class="form-label">Instructions:</label> 
+        <textarea class="form-control" id="recipe_instructions" name="recipe_instructions" placeholder="Step 1..."aria-describedby="recipeInstructionsHelp"><?=$fields['recipe_instructions']?></textarea>
+        <p class="invalid-feedback">Provide instructions on how you made this recipe.</p>
+        <!-- <label for="recipe_picture" class="form-label">Recipe Picture:</label> 
+        <input type="file" class="form-control" id="recipe_picture" name="recipe_picture" aria-describedby="recipePictureeHelp">-->
+        <div class="mt-2">
+            <button class="update btn btn-primary btn-sm" type="submit">Update</button>
+            <button class="delete btn btn-danger btn-sm" type="submit" name="deleteData" onclick="return confirm('Are you sure you want to delete?')">Delete</button>
+        </div>
         </form>
     </div>
 <script src="validator.js"></script>  
