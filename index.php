@@ -78,10 +78,10 @@ if (isset($_GET['logout'])) {
     </ol>
     <form name="sort" action="index.php" method="post">
       <select name="sortlist" class="form-select-sm ms-5">
-        <option value="recipe.recipe_id">Newest</option>
-        <option value="recipe.recipe_category">Category</option>
-        <option value="recipe.recipe_name">Recipe Name</option>
-        <option value="user.user_displayName">User Display Name</option>
+        <option value="recipe.recipe_id"<?php if($sort == 'recipe.recipe_id'):?><?='selected="selected"'?><?php endif?>>Newest</option>
+        <option value="recipe.recipe_category"<?php if($sort == 'recipe.recipe_category'):?><?='selected="selected"'?><?php endif?>>Category</option>
+        <option value="recipe.recipe_name"<?php if($sort == 'recipe.recipe_name'):?><?='selected="selected"'?><?php endif?>>Recipe Name</option>
+        <option value="user.user_displayName" <?php if($sort == 'user.user_displayName'):?><?='selected="selected"'?><?php endif?>>User Display Name</option>
       </select>
       <button type="submit" class="btn btn-outline-dark btn-sm rounded-3">Sort</button>
     </form>
@@ -119,5 +119,8 @@ if (isset($_GET['logout'])) {
     <?php endif?>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script>
+    if (window.history.replaceState) { window.history.replaceState( null, null, window.location.href );}
+</script>
 </body>
 </html>
