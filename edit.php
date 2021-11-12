@@ -155,11 +155,11 @@ if($_POST && isset($_POST['recipe_name'])) {
             <p class="invalid-feedback">Provide a description for your recipe.</p>
             <label for="form-select" class="form-label">Recipe Category:</label> 
             <select name ="recipe_category" class="form-select" aria-label="recipe category" required>
-            <option disabled value="">Select a Category:</option>
-                <option value="1|Breakfast <?php if($fields['recipe_category'] === 'Breakfast'):?><?='selected="selected"'?><?php endif?>" >Breakfast</option>
-                <option value="2|Lunch" <?php if($fields['recipe_category'] === 'Lunch'):?><?='selected="selected"'?><?php endif?>>Lunch</option>
-                <option value="3|Dinner <?php if($fields['recipe_category'] === 'Dinner'):?><?='selected="selected"'?><?php endif?>">Dinner</option>
-                <option value="4|Dessert <?php if($fields['recipe_category'] === 'Dessert'):?><?='selected="selected"'?><?php endif?>">Dessert</option>
+            <option selected disabled value="">Select a Category:</option>
+                <option value="1|Breakfast" <?php if($fields['recipe_category'] == 'Breakfast'):?><?='selected="selected"'?><?php endif?> >Breakfast</option>
+                <option value="2|Lunch" <?php if($fields['recipe_category'] == 'Lunch'):?><?='selected="selected"'?><?php endif?>>Lunch</option>
+                <option value="3|Dinner" <?php if($fields['recipe_category'] == 'Dinner'):?><?='selected="selected"'?><?php endif?>>Dinner</option>
+                <option value="4|Dessert" <?php if($fields['recipe_category'] == 'Dessert'):?><?='selected="selected"'?><?php endif?>>Dessert</option>
             </select>
             <label for="recipe_ingredients" class="form-label">Ingredients:</label> 
             <textarea class="form-control" id="recipe_ingredients" name="recipe_ingredients" placeholder="Enter your ingredients here..."aria-describedby="recipeIngredientsHelp"><?=$fields['recipe_ingredients']?></textarea>
