@@ -9,6 +9,7 @@ if($_POST && !empty($_POST['user_displayName']) && !empty($_POST['user_username'
     $user_displayName  = filter_input(INPUT_POST, 'user_displayName', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $user_username = filter_input(INPUT_POST, 'user_username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $user_password = filter_input(INPUT_POST, 'user_password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $hashed_password = password_hash($user_password, PASSWORD_BCRYPT);
     $user_password_verify = filter_input(INPUT_POST, 'user_password_verify', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     //first check if the user already exists
@@ -38,7 +39,7 @@ if($_POST && !empty($_POST['user_displayName']) && !empty($_POST['user_username'
     $statement = $db->prepare($query);
     $statement->bindValue(':user_displayName', $user_displayName);
     $statement->bindValue(':user_username', $user_username);
-    $statement->bindValue(':user_password', $user_password);
+    $statement->bindValue(':user_password', $hashed_password);
     $statement->execute();
     $_SESSION['username'] = $user_username;
   	$_SESSION['success'] = "You are now logged in";
