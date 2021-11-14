@@ -2,12 +2,11 @@
 $error = false;
 session_start();
 require('connect.php');
+
 if($_POST && !empty($_POST['user_username']) && !empty($_POST['user_password'])) {
-    
     $user_username = filter_input(INPUT_POST, 'user_username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $user_password = filter_input(INPUT_POST, 'user_password', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-    $query2 = "SELECT user_id, user_username, user_password, user_displayName FROM user WHERE user_username = '$user_username' AND user_password = '$user_password'";
+    $query2 = "SELECT user_id, user_username, user_password, user_displayName FROM user WHERE user_username = '$user_username'";
     $stmt = $db->prepare($query2); // Returns a PDOStatement object.
     $stmt->execute();
   
@@ -23,7 +22,7 @@ if($_POST && !empty($_POST['user_username']) && !empty($_POST['user_password']))
         $currentDisplayName = null;
     }
 
-    if($_POST['user_username'] == $currentUserName && $_POST['user_password'] == $currentPassword) {
+    if($_POST['user_username'] == $currentUserName && password_verify($_POST['user_password'], $currentPassword)) {
         if($currentUserName && $currentPassword) {
             $_SESSION['user_username'] = $user_username;
             $_SESSION['user_displayName'] = $currentDisplayName;
