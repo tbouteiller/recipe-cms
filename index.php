@@ -4,7 +4,7 @@ require("connect.php");
 
 //SELECT WITH CATEGORY SORT
 isset($_POST['sortlist']) == true ? $sort = $_POST['sortlist'] : $sort = 'recipe.recipe_id'; 
-$query = "SELECT recipe.recipe_name, recipe.recipe_id, recipe.recipe_category, recipe.recipe_description, user.user_displayName
+$query = "SELECT recipe.recipe_name, recipe.recipe_id, recipe.recipe_category, recipe.recipe_description, recipe_image, user.user_displayName
 FROM recipe
 INNER JOIN user ON (recipe.user_id=user.user_id) 
 ORDER BY $sort DESC";
@@ -18,6 +18,13 @@ if (isset($_GET['logout'])) {
   unset($_SESSION['user_displayName']);
   header("location: index.php");
 }
+
+//Random Food Trivia
+if(isset($_POST['trivia'])) {
+$response = file_get_contents('https://api.spoonacular.com/food/trivia/random?apiKey=89ff70a5c0ea455e8f3d21a422d70364');
+$response = json_decode($response, true);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -50,7 +57,7 @@ if (isset($_GET['logout'])) {
           <li class="nav-item">
             <a class="nav-link" aria-current="page" href="myrecipe.php">My Recipes</a>
           </li>
-          <a class="nav-link" aria-current="page" href="index.php?logout='1'">Sign Out<span class="navbar-text d-inline d-lg-none"> - <b><?php echo $_SESSION['user_displayName']?></b></span></a>
+          <li><a class="nav-link" aria-current="page" href="index.php?logout='1'">Sign Out<span class="navbar-text d-inline d-lg-none"> - <b><?php echo $_SESSION['user_displayName']?></b></span></a></li>
         <?php else:?>
           <a class="nav-link dropdown-toggle" href="login.php" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Sign In
@@ -60,8 +67,8 @@ if (isset($_GET['logout'])) {
             <li><a class="dropdown-item" href="register.php">Register</a></li>
           </ul>
         </li>
-      </ul>
       <?php endif?>
+        </ul>
     </div>
   </div>
   <?php if(isset($_SESSION['user_username'])):?>
@@ -69,30 +76,43 @@ if (isset($_GET['logout'])) {
   <?php endif?>
 </nav>
 <!--BANNER IMG-->
-<img class="w-100 shadow" src="banner2.jpeg" alt="banner">
+<img class="w-100 shadow d-xl-inline-block d-lg-inline-block d-md-inline-block d-none" src="banner2.jpeg" alt="banner">
+<!--FOOD TRIVIA-->
+<div class="container mt-1">
+  <div class="card">
+    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+      <form action="index.php" method="POST">
+        <button class="btn btn-sm btn-outline-dark" type="submit" name="trivia">Click for Random Food Trivia!</button>
+      </form>
+      <?php if(isset($response)):?>
+        <p class="pt-1 mb-0"><?=$response['text']?></p>    
+      <?php endif?>
+    </div>
+  </div>
+</div>
 <!--BREADCRUMB NAV-->
 <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
   <div class="d-flex mt-2 justify-content-center">
     <ol class="breadcrumb ps-2 pt-1">
-      <li class="breadcrumb-item active" aria-current="page">Home</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Home</li>
     </ol>
     <form name="sort" action="index.php" method="post">
       <select name="sortlist" class="form-select-sm ms-5">
-        <option value="recipe.recipe_id"<?php if($sort == 'recipe.recipe_id'):?><?='selected="selected"'?><?php endif?>>Newest</option>
-        <option value="recipe.recipe_category"<?php if($sort == 'recipe.recipe_category'):?><?='selected="selected"'?><?php endif?>>Category</option>
-        <option value="recipe.recipe_name"<?php if($sort == 'recipe.recipe_name'):?><?='selected="selected"'?><?php endif?>>Recipe Name</option>
-        <option value="user.user_displayName" <?php if($sort == 'user.user_displayName'):?><?='selected="selected"'?><?php endif?>>User Display Name</option>
+        <option value="recipe.recipe_id"<?php if($sort == 'recipe.recipe_id'):?><?=' selected="selected"'?><?php endif?>>Newest</option>
+        <option value="recipe.recipe_category"<?php if($sort == 'recipe.recipe_category'):?><?=' selected="selected"'?><?php endif?>>Category</option>
+        <option value="recipe.recipe_name"<?php if($sort == 'recipe.recipe_name'):?><?=' selected="selected"'?><?php endif?>>Recipe Name</option>
+        <option value="user.user_displayName" <?php if($sort == 'user.user_displayName'):?><?=' selected="selected"'?><?php endif?>>User Display Name</option>
       </select>
-      <button type="submit" class="btn btn-outline-dark btn-sm rounded-3">Sort</button>
+      <button type="submit" class="btn btn-outline-dark btn-sm rounded-3 mb-1">Sort</button>
     </form>
-  <div>
+  </div> 
 </nav>
 <!--MAIN CONTENT-->
 <div class="container-fluid w-75">
   <div class="row justify-content-center">
     <?php while ($row = $statement->fetch()): ?>
       <div class="card m-2 shadow-sm" style="width: 18rem;">
-        <!--<img src="..." class="card-img-top" alt="...">-->
+        <img src="<?php if($row['recipe_image']):?><?=$row['recipe_image']?><?php else:?>norecipe.jpg<?php endif?>" style="max-height: 175px;" class="mt-2 border border-secondary rounded" alt="recipeImage">
         <div class="card-body d-flex flex-column justify-content-between">
           <div>
             <h5 class="card-title"><a class="text-decoration-none link-dark" href="recipe.php?recipe_id=<?=$row['recipe_id']?>"><strong><?= $row['recipe_name'] ?></strong></a></h5>

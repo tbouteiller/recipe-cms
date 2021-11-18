@@ -91,10 +91,10 @@ if($_POST && !empty($_POST['user_username']) && !empty($_POST['user_password']))
 <div class="container">
         <form class="needs-validation p-4 border border-2" id="form" name="submit" action="login.php" method="POST" novalidate>          
             <label for="user_username" class="form-label">Username:</label> 
-            <input type="text" class="form-control" id="user_username" name="user_username" aria-describedby="userUsernameHelp" required>
+            <input type="text" class="form-control" id="user_username" name="user_username" required>
             <p class="invalid-feedback">Username cannot be empty.</p>
             <label for="user_password" class="form-label">Password:</label> 
-            <input type="password" class="form-control" id="user_password" name="user_password" aria-describedby="userPasswordHelp" required>
+            <input type="password" class="form-control" id="user_password" name="user_password" required>
             <p class="invalid-feedback">Password field cannot be empty.</p>
             <?php if($error):?>
                 <div class="alert alert-danger mt-1" role="alert">

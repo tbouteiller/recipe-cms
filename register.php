@@ -13,8 +13,10 @@ if($_POST && !empty($_POST['user_displayName']) && !empty($_POST['user_username'
     $user_password_verify = filter_input(INPUT_POST, 'user_password_verify', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     //first check if the user already exists
-    $query2 = "SELECT user_username, user_displayName FROM user WHERE user_username = '$user_username' OR user_displayName = '$user_displayName'";
+    $query2 = "SELECT user_username, user_displayName FROM user WHERE user_username = :user_username OR user_displayName = :user_displayName";
     $stmt = $db->prepare($query2); // Returns a PDOStatement object.
+    $stmt->bindValue(':user_username', $user_username);
+    $stmt->bindValue(':user_displayName', $user_displayName);
     $stmt->execute();
 
     foreach($stmt as $row) {
@@ -89,31 +91,31 @@ if($_POST && !empty($_POST['user_displayName']) && !empty($_POST['user_username'
     <nav style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
         <ol class="breadcrumb ps-2 pt-1">
             <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="Register">Register</li>
+            <li class="breadcrumb-item active" >Register</li>
          </ol>
     </nav>
     <!--REGISTER FORM-->
     <div class="container">
         <form class="needs-validation" id="form" name="submit" action="register.php" method="POST" novalidate oninput='user_password_verify.setCustomValidity(user_password_verify.value != user_password.value ? "Passwords do not match." : "")'>          
             <label for="user_displayName" class="form-label">User Display Name:</label> 
-            <input type="text" class="form-control" id="user_displayName" name="user_displayName" aria-describedby="userDisplayName" required>
+            <input type="text" class="form-control" id="user_displayName" name="user_displayName" required>
             <p class="invalid-feedback">Please enter your display name.</p>
             <?php while($displayNameTaken):?>
               <p class="text-danger fs-6">Sorry, that display name is taken!</p>
               <?=($displayNameTaken = false)?>
             <?php endwhile?>
             <label for="user_username" class="form-label">Please enter a username:</label> 
-            <input type="text" class="form-control" id="user_username" name="user_username" aria-describedby="userUsernameHelp" required>
+            <input type="text" class="form-control" id="user_username" name="user_username" required>
             <p class="invalid-feedback">Please enter a username.</p>
             <?php while($userNameTaken):?>
               <p class="text-danger fs-6">Sorry, that username is taken!</p>
               <?=($userNameTaken = false)?>
             <?php endwhile?>
             <label for="user_password" class="form-label">Please enter a password:</label> 
-            <input type="password" class="form-control" id="user_password" name="user_password" aria-describedby="userPasswordHelp" required>
+            <input type="password" class="form-control" id="user_password" name="user_password" required>
             <p class="invalid-feedback">Please enter a password.</p>
             <label for="user_password_verify" class="form-label">Please verify your password:</label> 
-            <input type="password" class="form-control" id="user_password_verify" name="user_password_verify" aria-describedby="userPasswordVerifyHelp" required>
+            <input type="password" class="form-control" id="user_password_verify" name="user_password_verify" required>
             <p class="invalid-feedback">Please ensure your passwords match.</p>
             <button>Register</button>
         </form>

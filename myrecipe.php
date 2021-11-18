@@ -7,9 +7,10 @@
     $query = "SELECT recipe.recipe_name, recipe.user_id, recipe.recipe_id, recipe.recipe_category, recipe.recipe_description, recipe.recipe_ingredients, recipe.recipe_instructions, user.user_displayName
      FROM recipe
      INNER JOIN user ON (recipe.user_id=user.user_id)
-     WHERE recipe.user_id = '$id'
+     WHERE recipe.user_id = :user_id
      ORDER BY recipe.recipe_id DESC";   
     $statement = $db->prepare($query); // Returns a PDOStatement object.
+    $statement->bindValue(':user_id', $id, PDO::PARAM_INT);
     $statement->execute(); // The query is now executed.
 
     //ADMIN RECIPE SELECT
@@ -26,7 +27,7 @@
       $adminUserStmt->execute();
     }
 
-    //ADMIN UPDAATE
+    //ADMIN UPDATE
     IF($_POST && isset($_POST['adminUpdate'])) {
       $username  = filter_input(INPUT_POST, 'adminUsername', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
       $displayName  = filter_input(INPUT_POST, 'adminDisplayName', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -35,7 +36,7 @@
       $adminUpdateStmt = $db->prepare($adminUpdateQuery);
       $adminUpdateStmt->bindValue(':user_displayName', $displayName);
       $adminUpdateStmt->bindValue(':user_username', $username);
-      $adminUpdateStmt->bindValue(':user_id', $userId);
+      $adminUpdateStmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
       $adminUpdateStmt->execute();
       header("Location: myrecipe.php");
       exit;
@@ -45,7 +46,7 @@
       $userId = filter_input(INPUT_POST, 'adminUserId', FILTER_SANITIZE_NUMBER_INT);
       $adminDeleteQuery = "DELETE FROM user WHERE user_id = :user_id LIMIT 1";
       $adminDeleteStmt = $db->prepare($adminDeleteQuery);
-      $adminDeleteStmt->bindValue(':user_id', $userId);
+      $adminDeleteStmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
       $adminDeleteStmt->execute();
       header("Location: myrecipe.php");
       exit;
@@ -82,7 +83,7 @@
           <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="myrecipe.php">My Recipes</a>
           </li>
-          <a class="nav-link" aria-current="page" href="index.php?logout='1'">Sign Out<span class="navbar-text d-inline d-lg-none"> - <b><?php echo $_SESSION['user_displayName']?></b></span></a>
+          <li><a class="nav-link" aria-current="page" href="index.php?logout='1'">Sign Out<span class="navbar-text d-inline d-lg-none"> - <b><?php echo $_SESSION['user_displayName']?></b></span></a></li>
         <?php else:?>
           <a class="nav-link dropdown-toggle" href="login.php" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Sign In
@@ -92,8 +93,8 @@
             <li><a class="dropdown-item" href="register.php">Register</a></li>
           </ul>
         </li>
-      </ul>
       <?php endif?>
+      </ul>
     </div>
   </div>
   <?php if(isset($_SESSION['user_username'])):?>
@@ -108,23 +109,25 @@
     </ol>
 </nav>
 <!--USER RECIPES-->
-<div class="container">
+<div class="mb-8 container">
 <?php while ($row = $statement->fetch()): ?>  
-        <div class="mb-8">       
+        <div class="mb-8">
+          <div class="bg-light p-4 rounded-3 border border-2 mb-1">     
             <h3><strong><?=$row['recipe_name']?></strong></h3>
             <p class="
-                  <?php if($row['recipe_category'] === 'Lunch'):?>
+                  <?php if($row['recipe_category'] == 'Lunch'):?>
                   btn-warning
-                  <?php elseif($row['recipe_category'] === 'Breakfast'):?>
+                  <?php elseif($row['recipe_category'] == 'Breakfast'):?>
                   btn-success
-                  <?php elseif($row['recipe_category'] === 'Dessert'):?>
+                  <?php elseif($row['recipe_category'] == 'Dessert'):?>
                   btn-info
-                  <?php elseif($row['recipe_category'] === 'Dinner'):?>
+                  <?php elseif($row['recipe_category'] == 'Dinner'):?>
                   btn-danger
                   <?php endif?>
                   btn disabled btn-sm rounded-pill px-3"><?=$row['recipe_category']?></p>   
             <p class="mb-0"><?=$row['recipe_description']?></p>
-            <p class="mt-0">By: <b><?=$row['user_displayName']?></b></p>        
+            <p class="mt-0">By: <b><?=$row['user_displayName']?></b></p>
+          </div>       
             <h4>Ingredients</h4>
             <p><?=nl2br($row['recipe_ingredients'])?></p>      
             <h4>Instructions</h4>       

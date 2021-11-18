@@ -2,7 +2,7 @@
   session_start();
   require("connect.php"); 
 
-  //DELETE
+  //DELETE COMMENT
   if($_POST && isset($_POST['comment_id'])){
     $comment_id = filter_input(INPUT_POST, 'comment_id', FILTER_SANITIZE_NUMBER_INT);
     $query4 = "DELETE FROM comment WHERE comment_id = :comment_id LIMIT 1";
@@ -12,7 +12,6 @@
    }
 
   //RECIPE SELECT
-  //$user_id = $_SESSION['user_id'];
   if(isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
   } else $user_id = null;
@@ -110,7 +109,7 @@
          </ol>
     </nav>
     <div class="mb-8 container">
-      <div class="bg-light p-4 rounded-3 border border-2 mb-1">       
+      <div class="bg-light p-4 rounded-3 border border-2 mb-1">
             <h3><strong><?=$row['recipe_name']?></strong></h3>
             <p class="
                   <?php if($row['recipe_category'] === 'Lunch'):?>

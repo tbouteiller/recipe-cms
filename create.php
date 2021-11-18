@@ -14,21 +14,24 @@ if($_POST && !empty($_POST['recipe_name']) && !empty($_POST['recipe_description'
     $recipe_ingredients = filter_input(INPUT_POST, 'recipe_ingredients', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $recipe_instructions = filter_input(INPUT_POST, 'recipe_instructions', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $user_id = $_SESSION['user_id'];
+    
+    include('imageprocess.php');
 
-    $query= "INSERT INTO recipe (recipe_name, user_id, recipe_description, recipe_category, recipe_ingredients, recipe_instructions)
-    VALUES (:recipe_name, :user_id, :recipe_description, :recipe_category, :recipe_ingredients, :recipe_instructions)";
+    if($uploadOk == 1) {
+    $query= "INSERT INTO recipe (recipe_name, user_id, recipe_description, recipe_category, recipe_ingredients, recipe_instructions, recipe_image)
+    VALUES (:recipe_name, :user_id, :recipe_description, :recipe_category, :recipe_ingredients, :recipe_instructions, :recipe_image)";
     $statement = $db->prepare($query);
     $statement->bindValue(':recipe_name', $recipe_name);
-    $statement->bindValue(':user_id', $user_id);
+    $statement->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $statement->bindValue(':recipe_description', $recipe_description);
     $statement->bindValue(':recipe_category', $recipe_category);
     $statement->bindValue(':recipe_ingredients', $recipe_ingredients);
     $statement->bindValue(':recipe_instructions', $recipe_instructions);
-    //$statement->bindValue(':recipe_image', $filename);
+    $statement->bindValue(':recipe_image', $target_file); 
     $statement->execute();
-    //$insert_id = $db->lastInsertId();
     header("Location: index.php");
     exit;
+    }
 }
 ?>
 
@@ -62,7 +65,7 @@ if($_POST && !empty($_POST['recipe_name']) && !empty($_POST['recipe_description'
           <li class="nav-item">
           <a class="nav-link" aria-current="page" href="myrecipe.php">My Recipes</a>
           </li>
-          <a class="nav-link" aria-current="page" href="index.php?logout='1'">Sign Out<span class="navbar-text d-inline d-lg-none"> - <b><?php echo $_SESSION['user_displayName']?></b></span></a>
+          <li><a class="nav-link" aria-current="page" href="index.php?logout='1'">Sign Out<span class="navbar-text d-inline d-lg-none"> - <b><?php echo $_SESSION['user_displayName']?></b></span></a></li>
         <?php else:?>
           <a class="nav-link dropdown-toggle" href="login.php" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Sign In
@@ -72,8 +75,8 @@ if($_POST && !empty($_POST['recipe_name']) && !empty($_POST['recipe_description'
             <li><a class="dropdown-item" href="register.php">Register</a></li>
           </ul>
         </li>
-      </ul>
       <?php endif?>
+      </ul>
     </div>
   </div>
   <?php if(isset($_SESSION['user_username'])):?>
@@ -89,15 +92,15 @@ if($_POST && !empty($_POST['recipe_name']) && !empty($_POST['recipe_description'
 </nav>
 <!--CREATE FORM-->
     <div class="container">
-        <form class="needs-validation p-4 border border-2" id="form" name="submit" action="create.php" method="POST" novalidate>
+        <form class="needs-validation p-4 border border-2" id="form" name="submit" action="create.php" method="POST" enctype="multipart/form-data" novalidate>
             <label for="recipe_name" class="form-label">Recipe Name:</label> 
-            <input type="text" class="form-control" id="recipe_name" name="recipe_name" aria-describedby="recipeNameHelp" required>
+            <input type="text" class="form-control" id="recipe_name" name="recipe_name" required>
             <p class="invalid-feedback">You need a name for your recipe.</p>
             <label for="recipe_description" class="form-label">Recipe Description:</label> 
-            <textarea class="form-control" id="recipe_description" name="recipe_description" placeholder="Enter the recipes description here..."aria-describedby="recipeDescriptionHelp" required></textarea>
+            <textarea class="form-control" id="recipe_description" name="recipe_description" placeholder="Enter the recipes description here..." required></textarea>
             <p class="invalid-feedback">Provide a description for your recipe.</p>
-            <label for="form-select" class="form-label">Recipe Category:</label> 
-            <select name ="recipe_category" class="form-select" aria-label="recipe category" required>
+            <label for="recipe_category" class="form-label">Recipe Category:</label> 
+            <select id="recipe_category" name="recipe_category" class="form-select" required>
                 <option selected disabled value="">Select a Category:</option>
                 <option value="1|Breakfast">Breakfast</option>
                 <option value="2|Lunch">Lunch</option>
@@ -105,13 +108,19 @@ if($_POST && !empty($_POST['recipe_name']) && !empty($_POST['recipe_description'
                 <option value="4|Dessert">Dessert</option>
             </select>
             <label for="recipe_ingredients" class="form-label">Ingredients:</label> 
-            <textarea class="form-control" id="recipe_ingredients" name="recipe_ingredients" placeholder="Enter your ingredients here..."aria-describedby="recipeIngredientsHelp" required></textarea>
+            <textarea class="form-control" id="recipe_ingredients" name="recipe_ingredients" placeholder="Enter your ingredients here..." required></textarea>
             <p class="invalid-feedback">Enter the ingredients you used to make this recipe.</p>
             <label for="recipe_instructions" class="form-label">Instructions:</label> 
-            <textarea class="form-control" id="recipe_instructions" name="recipe_instructions" placeholder="Step 1..."aria-describedby="recipeInstructionsHelp" required></textarea>
+            <textarea class="form-control" id="recipe_instructions" name="recipe_instructions" placeholder="Step 1..." required></textarea>
             <p class="invalid-feedback">Provide instructions on how you made this recipe.</p>
-           <!-- <label for="recipe_picture" class="form-label">Recipe Picture:</label> 
-            <input type="file" class="form-control" id="recipe_picture" name="recipe_picture" aria-describedby="recipePictureeHelp">-->
+            <label for="recipe_image" class="form-label">Recipe Picture:</label> 
+            <input type="file" class="form-control" id="recipe_image" name="recipe_image">
+            <?php if(isset($error)):?>
+            <p class="text-danger"><?=$error?></p>
+            <?php endif?>
+            <?php if(isset($success)):?>
+              <p><?=$success?></p>
+            <?php endif?>
             <button class="btn btn-primary mt-2">Create</button>
         </form>
     </div>
